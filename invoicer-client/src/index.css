@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700&display=swap');
+@import "tw-animate-css";
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;  
+  width: 100%;   
+  font-family: "Clash Display", sans-serif;
+  
+}
+
+body {
+  min-height: 100vh; 
+}
