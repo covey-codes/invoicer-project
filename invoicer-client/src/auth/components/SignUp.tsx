@@ -6,6 +6,9 @@ import { Button } from "@/shared/components/ui/button";
 import { Label } from "@/shared/components/ui/label";
 import { FcGoogle } from "react-icons/fc";
 import signup from "@/assets/signup.jpeg";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const SignUp = () => {
   const {
@@ -16,13 +19,30 @@ const SignUp = () => {
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = (data: SignUpData) => {
-    console.log("SignUp form submitted:", data);
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: SignUpData) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/auth/signup",
+        data
+      );
+  
+      console.log("Signup success:", res.data);
+  
+      // redirect to signin page after successful signup
+      navigate("/signin");
+    } catch (error: any) {
+      console.error(
+        "Signup failed:",
+        error.response?.data?.message || error.message
+      );
+    }
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row w-screen h-screen">
-      {/* Image section - only visible on medium+ screens */}
       <div className="hidden md:block md:w-1/2 h-64 md:h-full relative">
         <img
           src={signup}
@@ -32,7 +52,6 @@ const SignUp = () => {
         />
       </div>
 
-      {/* Form section */}
       <div className="w-full md:w-1/2 h-full flex items-center justify-center px-6 md:px-10">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center">
