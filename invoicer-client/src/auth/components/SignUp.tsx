@@ -22,6 +22,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data: SignUpData) => {
+    console.log("Form submitted:", data);
     try {
       const res = await axios.post(
         "http://localhost:8000/api/auth/signup",
@@ -91,9 +92,15 @@ const SignUp = () => {
               )}
             </div>
 
-            <Button type="submit" className="w-full text-white bg-purple-400">
-              Sign Up
-            </Button>
+            <Button
+             type="submit"
+             className="w-full bg-purple-400 text-white 
+             hover:bg-purple-300 
+             transition-colors duration-200"
+            >
+          Sign Up
+             </Button>
+
           </form>
 
           <div className="flex items-center justify-center">
