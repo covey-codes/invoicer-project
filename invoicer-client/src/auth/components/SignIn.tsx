@@ -7,10 +7,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { signInSchema, SignInData } from "@/auth/constants/schema";
 import signup from "@/assets/signup.jpeg";
-import axios from 'axios'
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const {
     register,
@@ -20,10 +23,33 @@ const SignIn = () => {
     resolver: zodResolver(signInSchema),
   });
 
-  const onSubmit = (data: SignInData) => {
-    console.log("Form submitted:", data);
-    navigate("/dashboard");
-    axios.get('/')
+  // Auto-redirect if user is already logged in
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, []);
+
+  const onSubmit = async (data: SignInData) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      // Send login request
+      const response = await axios.post("http://localhost:8000/api/auth/login", data);
+
+      // Save token & user info
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      // Redirect to dashboard
+      navigate("/dashboard");
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,14 +91,18 @@ const SignIn = () => {
                 placeholder="••••••••"
               />
               {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
+                <p className="text-sm text-red-500">{errors.password.message}</p>
               )}
             </div>
 
-            <Button type="submit" className="w-full text-white bg-purple-400">
-              Sign In
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
+            <Button
+              type="submit"
+              className="w-full text-white bg-purple-400"
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
@@ -85,7 +115,7 @@ const SignIn = () => {
             className="w-full flex items-center justify-center gap-2"
           >
             <FcGoogle className="text-xl" />
-            Sign up with Google
+            Sign in with Google
           </Button>
 
           <div className="mt-4 flex items-center justify-center gap-4 text-sm text-gray-500">
