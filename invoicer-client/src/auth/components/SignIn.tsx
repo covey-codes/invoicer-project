@@ -23,7 +23,6 @@ const SignIn = () => {
     resolver: zodResolver(signInSchema),
   });
 
-  // Auto-redirect if user is already logged in
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/dashboard");
@@ -35,14 +34,11 @@ const SignIn = () => {
       setLoading(true);
       setError("");
 
-      // Send login request
       const response = await axios.post("http://localhost:8000/api/auth/login", data);
 
-      // Save token & user info
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // Redirect to dashboard
       navigate("/dashboard");
     } catch (err: any) {
       console.error("Login failed:", err);

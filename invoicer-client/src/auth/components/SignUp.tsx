@@ -31,7 +31,6 @@ const SignUp = () => {
   
       console.log("Signup success:", res.data);
   
-      // redirect to signin page after successful signup
       navigate("/signin");
     } catch (error: any) {
       console.error(
