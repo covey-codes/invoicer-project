@@ -1,9 +1,7 @@
-import { Button } from "@/shared/components/ui/button";
 import { Menu, X, ChevronDown, FileText, Users, BarChart2 } from "lucide-react";
 import { useNavbar } from "@/landing/hooks/navhooks";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-
 
 const mockUser = {
   name: "Kelvin",
@@ -18,7 +16,7 @@ const Navbar = () => {
     Boolean(localStorage.getItem("token"))
   );
 
-  const [user, setUser] = useState(mockUser);
+  const [user] = useState(mockUser);
   const [isMobileFeaturesOpen, setIsMobileFeaturesOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -31,40 +29,22 @@ const Navbar = () => {
       setIsUserMenuOpen(false);
     };
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target as Node)
-      ) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
     window.addEventListener("scroll", handleScroll);
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [setIsMenuOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-
     setIsAuthenticated(false);
-
-    setIsUserMenuOpen(false);
     setIsMenuOpen(false);
-
     navigate("/signin");
   };
 
   return (
     <nav className="relative lg:w-[90%] mt-5 mx-4 lg:mx-20 bg-[#03192F] rounded-2xl py-4 z-50 shadow-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16 items-center">
-          <span className="text-2xl text-white font-extrabold gradient-text">
+          <span className="text-2xl text-white font-extrabold">
             Invoicer-Client
           </span>
 
@@ -94,53 +74,10 @@ const Navbar = () => {
             <Link to="/pricing" className="text-white hover:text-indigo-400">
               Pricing
             </Link>
-          </div>
 
-          {/* DESKTOP AUTH / USER */}
-          <div className="hidden md:flex items-center">
-            {isAuthenticated ? (
-              <div ref={profileMenuRef} className="relative">
-                <button
-                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
-                  className="flex items-center gap-2 text-white"
-                >
-                  <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold">
-                    {user.name.charAt(0)}
-                  </div>
-                  <ChevronDown size={16} />
-                </button>
-
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg">
-                    <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
-                      Profile
-                    </Link>
-                    <Link to="/settings" className="block px-4 py-2 hover:bg-gray-100">
-                      Settings
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex space-x-3">
-                <Link to="/signin">
-                  <Button variant="outline" className="text-white">
-                    Sign in
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
-            )}
+            <Link to="/support" className="text-white hover:text-indigo-400">
+              Support
+            </Link>
           </div>
 
           <div className="md:hidden">
@@ -151,35 +88,91 @@ const Navbar = () => {
         </div>
       </div>
 
+      {isMenuOpen && (
+        <div
+          onClick={() => setIsMenuOpen(false)}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+        />
+      )}
+
       <div
         ref={menuRef}
-        className={`fixed top-5 right-0 w-64 bg-[#03192F] p-4 transition-transform ${
+        className={`fixed top-0 right-0 h-full w-1/2 bg-[#03192F] p-6 z-50 transition-transform duration-300 ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {isAuthenticated ? (
-          <>
-            <Link to="/profile" className="block text-white">
-              Profile
-            </Link>
-            <button onClick={handleLogout} className="block text-red-400">
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/signin">
-              <Button variant="outline" className="w-full text-white">
-                Sign in
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-                Get Started
-              </Button>
-            </Link>
-          </>
-        )}
+        <div className="space-y-1 text-white">
+
+<Link
+  to="/dashboard"
+  className="block px-4 py-3 border-t border-b border-white/20"
+  onClick={() => setIsMenuOpen(false)}
+>
+  Home
+</Link>
+
+<button
+  onClick={() => setIsMobileFeaturesOpen((p) => !p)}
+  className="w-full text-left px-4 py-3 border-t border-b border-white/20 flex items-center justify-between"
+>
+  Features <ChevronDown size={16} />
+</button>
+
+{isMobileFeaturesOpen && (
+  <div className="text-sm">
+    <Link
+      to="/invoiceForm"
+      className="block px-6 py-3 border-b border-white/20"
+    >
+      Smart Invoicing
+    </Link>
+    <Link
+      to="/clientManagement"
+      className="block px-6 py-3 border-b border-white/20"
+    >
+      Client Management
+    </Link>
+    <Link
+      to="/financialReporting"
+      className="block px-6 py-3 border-b border-white/20"
+    >
+      Financial Reporting
+    </Link>
+  </div>
+)}
+
+<Link
+  to="/pricing"
+  className="block px-4 py-3 border-t border-b border-white/20"
+>
+  Pricing
+</Link>
+
+<Link
+  to="/support"
+  className="block px-4 py-3 border-t border-b border-white/20"
+>
+  Support
+</Link>
+
+<Link
+  to="/profile"
+  className="block px-4 py-3 border-t border-b border-white/20"
+>
+  Profile
+</Link>
+
+{/* LOGOUT */}
+{isAuthenticated && (
+  <button
+    onClick={handleLogout}
+    className="w-full mt-6 px-4 py-3 text-red-400 border-t border-red-500"
+  >
+    Logout
+  </button>
+)}
+</div>
+
       </div>
     </nav>
   );
