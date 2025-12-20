@@ -41,7 +41,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="relative lg:w-[90%] mt-5 mx-4 lg:mx-20 bg-[#03192F] rounded-2xl py-4 z-50 shadow-xl">
+    <nav className="relative lg:w-[100%] mt-5 mx-4 lg:mx-20 bg-[#03192F] rounded-2xl py-4 z-50 shadow-xl">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16 items-center">
           <span className="text-2xl text-white font-extrabold">

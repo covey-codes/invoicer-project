@@ -6,7 +6,7 @@ import hero from "@/assets/dashboard.jpg";
 const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
-      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-[50px]">
+      <div className="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8 mt-[70px]">
         <div className="flex flex-col md:flex-row items-center md:justify-between gap-12">
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-4xl md:text-6xl font-extrabold font-clash text-dark-text tracking-tight leading-tight">
